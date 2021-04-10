@@ -1,0 +1,21 @@
+body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background: url('../resources/home_bg.jpg');
+    background-size: cover;
+	background-position: center;
+}
+
+header {
+    padding-bottom: 10%;
+}
+
+h1 {
+    text-align: center;
+}
+
+a {
+    padding-left: 50%;
+    padding-right: 50%;
+}

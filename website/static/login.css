@@ -1,0 +1,46 @@
+body
+{
+	margin: 30;
+	padding: 30;
+	box-sizing: border-box;
+	height: 500px;
+	background-size: cover;
+	background-position: center;
+}
+h1
+{
+	color: solid black;
+	margin:5;
+	padding:5;
+	font-family: arial;
+	position:center;
+	text-align: center;
+
+}
+.title{
+	background-color:#04d9ff;opacity:0.6;; 
+	margin: auto;
+	margin-top: 250px;
+	width: 50%;
+	border: 3px solid black;
+	padding: 3px;
+}
+
+
+input[type=text], input[type=password] {
+	width: 100%;
+	padding: 3px;
+	margin: 8px 0;
+	display: inline-block;
+	border: 1px solid #04d9ff;
+	box-sizing: border-box;
+}
+.forms{
+	margin: auto;
+	width: 50%;
+	border: 3px solid black;
+	padding: 3px;
+}
+.login{
+	margin-left: 45%;
+}
