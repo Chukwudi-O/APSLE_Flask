@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>APSLE - Admin Home</title>
+	<link rel="stylesheet" type="text/css" href="/static/admin_home.css">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=devoce-width, initial-scale=1"/>
+</head>
+<body>
+	<h1 class="centerText">Anchovy Primary School Learning Environment</h1>
+	<div class="mainDiv">
+        <div class="add_user">
+            <h2 class="centerText">Add Users</h2>
+            <p class="centerText">Add new users to the system here:</p><br>
+            <form method="POST">
+                <h5>User Type</h5>
+                <input required type="radio" name="user_type" value="teacher">
+                <label for="Teacher">Teacher</label>
+                <input required type="radio" name="user_type" value="student">
+                <label for="Student">Student</label><br><br>
+
+                <h5>Gender</h5>
+                <input required type="radio" name="gender" value="male">
+                <label for="male">Male</label>
+                <input required type="radio" name="gender" value="female">
+                <label for="female">Female</label><br><br>
+                
+                <label for="f_name">First name:</label>
+                <input required type="text" name="f_name"><br>
+                <label for="l_name">Last name:</label>
+                <input required type="text" name="l_name"><br>
+                <label for="p_word">Password:</label>
+                <input required type="password" name="p_word"><br>
+                <label for="c_p_word">Confirm Password:</label>
+                <input required type="password" name="c_p_word"><br>
+                <label for="g_num">Grade Number:</label>
+                <input required type="number" name="g_num"><br>
+                <label for="c_num">Class Number:</label>
+                <input required type="number" name="c_num">
+                <br><button type="Submit">Submit</button><br>
+                <input type="hidden" name="form_type" value="add_users">
+            </form>
+            <h4>{{add_message}}</h4>
+        </div>
+        <div class="delete_user">
+            <h2 class="center_text">Delete Users</h2>
+            <p class="center_text">Enter the username and click the user type of user you wish to delete and click Delete.</p>
+            <form method="POST">
+                <label for="user_name">Username</label>
+                <input required type="text" id="user_name" name="user_name"><br>
+                <label for="teacher">Teacher</label>
+                <input required type="radio" name="user_type" value="teacher">
+                <label for="student">Student</label>
+                <input required type="radio" name="user_type" value="student"><br><br>
+                <h4>{{delete_message}}</h4>
+                <button type="submit">DELETE</button><br>
+                <input type="hidden" name="form_type" value="delete_users">
+            </form>
+        </div>
+        <div class="edit_user">
+            <h2 class="center_text">Edit Users</h2>
+            <p class="center_text">Enter the details of user on the left and the new details on the right. (leave blank to keep unchanged)</p>
+            <form method="POST">
+                <div>
+                    <label for="user_name">Username:</label>
+                    <input required type="text" name="user_name"><br>
+                    <label for="user_type">User Type:</label>
+                    <input required type="text" name="user_type"><br>
+                </div>
+                <div>
+                    <label for="new_password">New Password:</label>
+                    <input type="password" name="new_password"><br>
+                    <label for="c_new_password">Confirm New Password:</label>
+                    <input type="password" name="c_new_password"><br>
+                    <label for="new_grade">New Grade Number:</label>
+                    <input type="password" name="new_grade"><br>
+                    <label for="new_class">New Class Number:</label>
+                    <input type="password" name="new_class"><br>
+                    <button type="submit">APPLY CHANGES</button>
+                </div>
+            </form>
+        </div>
+        <div class="all_users">
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <th>User type</th>
+                    <th>Grade Number</th>
+                    <th>Class Number</th>
+                </tr>
+                {% for i in range(len)%}
+                    <tr>
+                        <td>{{ all_users[i][0] }}</td>
+                        <td>{{ all_users[i][1] }}</td>
+                        <td>{{ all_users[i][2] }}</td>
+                        <td>{{ all_users[i][3] }}</td>
+                    </tr>
+                {%endfor%}
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,5 +1,5 @@
 from flask import Flask
-from .views import mysql, auth, main
+from .views import Views
 
 def create_app():
     app = Flask(__name__)
@@ -10,9 +10,10 @@ def create_app():
     app.config['MYSQL_PASSWORD'] = ''
     app.config['MYSQL_DB'] = 'apsle'
 
-    mysql.init_app(app)
+    views = Views()
+    views.mysql.init_app(app)
 
-    app.register_blueprint(auth)
-    app.register_blueprint(main)
+    app.register_blueprint(views.main)
+    app.register_blueprint(views.auth)
 
     return app
