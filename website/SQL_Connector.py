@@ -1,8 +1,10 @@
 from flask_mysqldb import MySQL
+from .classes.Users import Administrator,Teacher,Student
 
 class SQL_Connector:
     def __init__(self):
         self.my_sql = MySQL()
+        self.current_user = None
 
     def get_conn_cursor(self):
         return self.my_sql.connection.cursor()
@@ -16,15 +18,20 @@ class SQL_Connector:
         string = 'SELECT * from '+u_type+'logins'
         conn.execute(string)
         users = conn.fetchall()
+        conn.close()
 
         for i in range(len(users)):
             if (users[i][1] == u_name and users[i][2] == p_word):
-                conn.close()
-                #self.current_user = Administrator(admins[i][1],0,0)
-                return True
-        
-        conn.close()
-        return False
+                if u_type == "admin":
+                    self.current_user = Administrator(users[i][1],0,0)
+                    return self.current_user
+                elif u_type == "teacher":
+                    self.current_user = Teacher(users[i][1],users[i][4],users[i][3])
+                    return self.current_user
+                elif u_type == "student":
+                    self.current_user = Student(users[i][1],users[i][4],users[i][3])
+                    return self.current_user
+        return None
 
     def get_all_users(self):
         conn = self.get_conn_cursor()
@@ -35,8 +42,6 @@ class SQL_Connector:
         teachers = conn.fetchall()
         for i in range(len(teachers)):
             user_name = teachers[i][1]
-            #i_1 = user_name.index("\'")
-            #i_2 = user_name.index("\'",i_1+1)
             user_info = [user_name,"Teacher",teachers[i][4],teachers[i][3]]
             users.append(user_info)
 
@@ -45,8 +50,6 @@ class SQL_Connector:
         students = conn.fetchall()
         for i in range(len(students)):
             user_name = students[i][1]
-            #i_1 = user_name.index("\'")
-            #i_2 = user_name.index("\'",i_1+1)
             user_info = [user_name,"Student",students[i][4],students[i][3]]
             users.append(user_info)
 
@@ -76,3 +79,61 @@ class SQL_Connector:
         conn.execute(string,(u_name,))
         self.my_sql.connection.commit()
         conn.close()
+
+    def update_user(self,user_info,new_info):
+        all_users = self.get_all_users()
+        conn = self.get_conn_cursor()
+
+        for i in range(len(all_users)):
+            if all_users[i][0] == user_info[0] and all_users[i][1].lower() == user_info[1].lower():
+                query=""
+                if new_info[0] != "":
+                    if new_info[2] != "":
+                        if new_info[3] != "":
+                            query = "UPDATE "+user_info[1]+"logins SET password = %s, gradeNumber = %s, classNumber = %s WHERE username = %s"
+                            conn.execute(query,(new_info[0],new_info[2],new_info[3],user_info[0]))
+                            self.my_sql.connection.commit()
+                            conn.close()
+                            return 1
+                        else:
+                            query = "UPDATE "+user_info[1]+"logins SET password = %s, gradeNumber = %s WHERE username = %s"
+                            conn.execute(query,(new_info[0],new_info[2],user_info[0]))
+                            self.my_sql.connection.commit()
+                            conn.close()
+                            return 1
+                    else:
+                        if new_info[3] != "":
+                            query = "UPDATE "+user_info[1]+"logins SET password = %s, classNumber = %s WHERE username = %s"
+                            conn.execute(query,(new_info[0],new_info[3],user_info[0]))
+                            self.my_sql.connection.commit()
+                            conn.close()
+                            return 1
+                        else:
+                            query = "UPDATE "+user_info[1]+"logins SET password = %s WHERE username = %s"
+                            conn.execute(query,(new_info[0],user_info[0]))
+                            self.my_sql.connection.commit()
+                            conn.close()
+                            return 1
+                else:
+                    if new_info[2] != "":
+                        if new_info[3] != "":
+                            query = "UPDATE "+user_info[1]+"logins SET gradeNumber = %s, classNumber = %s WHERE username = %s"
+                            conn.execute(query,(new_info[2],new_info[3],user_info[0]))
+                            self.my_sql.connection.commit()
+                            conn.close()
+                            return 1
+                        else:
+                            query = "UPDATE "+user_info[1]+"logins SET gradeNumber = %s WHERE username = %s"
+                            conn.execute(query,(new_info[2],user_info[0]))
+                            self.my_sql.connection.commit()
+                            conn.close()
+                            return 1
+                    else:
+                        if new_info[3] != "":
+                            query = "UPDATE "+user_info[1]+"logins SET classNumber = %s WHERE username = %s"
+                            conn.execute(query,(new_info[3],user_info[0]))
+                            self.my_sql.connection.commit()
+                            conn.close()
+                            return 1
+        conn.close()
+        return 0

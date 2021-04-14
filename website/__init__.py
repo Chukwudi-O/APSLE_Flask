@@ -1,5 +1,9 @@
-from flask import Flask
-from .views import Views
+from flask import Flask,Blueprint, render_template, request
+from .blueprints.Admin_Blueprint import Admin_Blueprint
+from .blueprints.Authorize_Blueprint import Authorize_Blueprint
+from .blueprints.Teacher_Blueprint import Teacher_Blueprint
+from .blueprints.Student_Blueprint import Student_Blueprint
+from .SQL_Connector import SQL_Connector
 
 def create_app():
     app = Flask(__name__)
@@ -10,10 +14,23 @@ def create_app():
     app.config['MYSQL_PASSWORD'] = ''
     app.config['MYSQL_DB'] = 'apsle'
 
-    views = Views()
-    views.mysql.init_app(app)
+    mysql = SQL_Connector()
+    mysql.init_app(app)
+    
+    main = Blueprint('main',__name__)
+    auth_blueprint = Authorize_Blueprint("auth",__name__,mysql)
+    admin_blueprint = Admin_Blueprint("admin",__name__,mysql)
+    teacher_blueprint = Teacher_Blueprint("teacher",__name__,mysql)
+    student_blueprint = Student_Blueprint("student",__name__,mysql)
 
-    app.register_blueprint(views.main)
-    app.register_blueprint(views.auth)
+    @main.route('/')
+    def index():
+        return render_template('index.html')
+
+    app.register_blueprint(main)
+    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(admin_blueprint)
+    app.register_blueprint(teacher_blueprint)
+    app.register_blueprint(student_blueprint)
 
     return app
