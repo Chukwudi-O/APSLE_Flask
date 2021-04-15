@@ -12,10 +12,14 @@
 		<h2 class="center_text">Administrator Home</h2>
 		<p class="center_text">Welcome {{user_name}} to the Administrator Home page where you may perform all of the actions stated below:</p><br>
 		<form method="POST">
-			<button href="manage_users">MANAGE USERS</button><br>
-						
-			<button href="manage_classrooms">MANAGE CLASSROOMS</button><br>
+			<button type="submit">MANAGE USERS</button><br>		
+			<input type="hidden" name="form_type" value="manage_users">
 		</form>	
+		<form method="POST">
+			<button type="submit">MANAGE CLASSROOMS</button><br>		
+			<input type="hidden" name="form_type" value="manage_classrooms">
+		</form>	
+		<a href="/login">Logout</a>
 	</div>
 </body>
 </html>

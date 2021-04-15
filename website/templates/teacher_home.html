@@ -1,3 +1,26 @@
 <!DOCTYPE html>
-<h1>TEACHER</h1>
+<html>
+<head>
+	<title>APSLE - Teacher Home</title>
+	<link rel="stylesheet" type="text/css" href="/static/teacher_home.css">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body>
+	<h1 class="center_text">Anchovy Primary School Learning Environment</h1>
+	<div class="main_div">
+        <div>
+            <h2 class="center_text">Teacher Home</h2>
+            <p class="center_text">Welcome {{current_user.user_name}} to the Teacher Home page where you may perform all of the actions stated below:</p><br>
+            <button><a href="/manage_tests">MANAGE TESTS</a></button>
+        </div>
+        <div>
+            <p>To manage course material, click the subject you wish to manage.</p>
+            <button><a href="/maths">MATHEMATICS</a></button>
+            <button><a href="/english">ENGLISH</a></button>
+            <button><a href="/science">SCIENCE</a></button>
+        </div>
+        <button><a href="/login">Logout</a></button>
+    </div>
+</body>
 </html>

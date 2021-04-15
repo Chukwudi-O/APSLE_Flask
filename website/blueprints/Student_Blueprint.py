@@ -9,7 +9,7 @@ class Student_Blueprint(Blueprint):
 
         @self.route("/student_home", methods=['GET','POST'])
         def student_home():
+            self.current_user = self.mysql.current_user
             if request.method == 'POST':
                 return render_template("student_home.html")
             return render_template("student_home.html")
-            

@@ -15,15 +15,15 @@ class Authorize_Blueprint(Blueprint):
                 if (usern == '' or passw == ''):
                     return render_template("login.html")
 
-                if self.mysql.check_credentials(usern,passw,"admin") != None:
+                if self.mysql.check_credentials(usern,passw,"admin") is not None:
                     self.current_user = self.mysql.check_credentials(usern,passw,"admin")
                     return redirect(url_for('admin.admin_home'))
-                elif self.mysql.check_credentials(usern,passw,"teacher") != None:
+                elif self.mysql.check_credentials(usern,passw,"teacher") is not None:
                     self.current_user = self.mysql.check_credentials(usern,passw,"teacher")
-                    return redirect(url_for('main.teacher_home'))
-                elif self.mysql.check_credentials(usern,passw,"student") != None:
+                    return redirect(url_for('teacher.teacher_home'))
+                elif self.mysql.check_credentials(usern,passw,"student") is not None:
                     self.current_user = self.mysql.check_credentials(usern,passw,"student")
-                    return redirect(url_for('main.student_home'))
+                    return redirect(url_for('student.student_home'))
                 return render_template("login.html")
             return render_template('login.html')
 

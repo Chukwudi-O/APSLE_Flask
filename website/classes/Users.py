@@ -13,11 +13,15 @@ class User:
 class Administrator(User):
     def __init__(self,uname,gNum,cNum):
         User.__init__(self,uname,gNum,cNum)
+        self.user_type = "Admin"
 
 class Teacher(User):
     def __init__(self,uname,gNum,cNum):
         User.__init__(self,uname,gNum,cNum)
+        self.user_type = "Teacher"
 
 class Student(User):
     def __init__(self,uname,gNum,cNum):
         User.__init__(self,uname,gNum,cNum)
+        self.user_type = "Student"
+        
