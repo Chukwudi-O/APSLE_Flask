@@ -12,22 +12,17 @@
 		<h2 class="center_text">Manage Classrooms</h2>
 		<p class="center_text">Welcome {{user_name}}, here you can manage classrooms individually.</p><br>
 		<a href="/admin_home">Go back</a>
-        <p>Enter the grade and class number of the classroom you want to manage</p>
-            <form method="POST">
-                <label for="g_num">Grade Number:</label>
-                <input type="number" name="g_num">
-                <label for="c_num">Class Number:</label>
-                <input type="number" name="c_num">
-                <button type="submit">SUBMIT</button>
-            </form>
         <div style="display: flex;">
             {% for x in range(1,7) %}
                 <div style="padding-right: 4%;padding-left: 4%;">
                     <h2>Grade {{x}}</h2>
                     {% for y in range(1,7) %}
                         <h4>Class {{y}}</h4>
-                        <p>Teacher: {{teachers[x][y]}}</p>
-                        <p>Students: {{students[x][y]}}</p><br>
+                        <form method="post">
+                            <input type="hidden" name="grade" value="{{x}}">
+                            <input type="hidden" name="class" value="{{y}}">
+                            <input type="submit" value="manage">
+                        </form>
                     {%endfor%}
                 </div>
             {%endfor%}

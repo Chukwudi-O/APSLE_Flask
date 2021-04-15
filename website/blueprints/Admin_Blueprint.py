@@ -70,24 +70,11 @@ class Admin_Blueprint(Blueprint):
         @self.route("/manage_classrooms", methods=['GET','POST'])
         def manage_classrooms():
             if request.method == "POST":
-                g_num = request.form['g_num']
-                c_num = request.form['c_num']
-
-                if g_num >= 7 or c_num >= 7:
-                    print("Invalid classroom")
-
-            all_users = self.mysql.get_all_users()
-            teachers = [[""]*7]*7
-            students = [[0]*7]*7
+                g_num = request.form['grade']
+                c_num = request.form['class']
+                self.current_user.grade_number = g_num
+                self.current_user.class_number = c_num
+                return redirect(url_for("teacher.teacher_home"))
             
-            for i in range(len(all_users)):
-                if all_users[i][1] == "Student":
-                    pass
-                    #students[int(all_users[i][2])][int(all_users[i][3])] += 1
-                elif all_users[i][1] == "Teacher":
-                    pass
-                    #teachers[int(all_users[i][2])][int(all_users[i][3])] = str(all_users[i][0])
-                print(str(all_users[i][2])+","+str(all_users[i][3])+":"+str(all_users[i][0])+":"+str(all_users[1]))
-
-            return render_template("manage_classrooms.html",user_name=self.current_user.user_name,teachers=teachers,students=students)
+            return render_template("manage_classrooms.html",user_name=self.current_user.user_name)
         

@@ -24,13 +24,13 @@ class SQL_Connector:
         for i in range(len(users)):
             if (users[i][3] == u_name and users[i][4] == p_word):
                 if u_type == "admin":
-                    self.current_user = Administrator(users[i][1],0,0)
+                    self.current_user = Administrator(users[i][3],0,0)
                     return self.current_user
                 elif u_type == "teacher":
-                    self.current_user = Teacher(users[i][1],users[i][6],users[i][7])
+                    self.current_user = Teacher(users[i][3],users[i][6],users[i][7])
                     return self.current_user
                 elif u_type == "student":
-                    self.current_user = Student(users[i][1],users[i][6],users[i][7])
+                    self.current_user = Student(users[i][3],users[i][6],users[i][7])
                     return self.current_user
         return None
 
@@ -66,7 +66,7 @@ class SQL_Connector:
         class_number = new_user[5]
         gender = new_user[6]
 
-        string = "INSERT INTO "+user_type+"logins (first_name,last_name,username,password,gender,grade_number,class_number) "
+        string = "INSERT INTO "+user_type+"_logins (first_name,last_name,username,password,gender,grade_number,class_number) "
         string += "VALUES (%s,%s,%s,%s,%s,%s,%s)"
         print(string)
         conn.execute(string,(new_user[0],new_user[1],user_name,pass_word,gender,grade_number,class_number))
@@ -148,26 +148,35 @@ class SQL_Connector:
         return 0
 
     def upload_file(self,upload_info):
-        if upload_info[3] == "lecture_notes" or upload_info[3] == "assignment":
-            query = "INSERT into teacheruploads (`file_name`,`file_extension`,`input_name`,`file_description`,"
+        conn = self.get_conn_cursor()
+        date_now = datetime.datetime.now()
+        if self.current_user.user_type == "Teacher" or self.current_user.user_type == "Admin":
+            query = "INSERT into teacher_uploads (`file_name`,`file_extension`,`input_name`,`file_description`,"
             query += "`date_uploaded`,`subject`,`grade_number`,`class_number`,`type_of_upload`,`uploaded_by`)"
             query += " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
-            conn = self.get_conn_cursor()
             dot = upload_info[4].rfind(".")
             file_name = upload_info[4][:dot]
             file_extension = upload_info[4][dot+1:].lower()
-            date_now = datetime.datetime.now()
             info = (file_name,file_extension, upload_info[0], upload_info[1], date_now,upload_info[2],self.current_user.grade_number,
                     self.current_user.class_number,upload_info[3],self.current_user.user_name)
+        elif self.current_user.user_type == "Student":
+            query = "INSERT INTO student_submissions (`file_name`,`file_extension`,`date_uploaded`,`subject`,"
+            query += "`grade_number`,`class_number`,`uploaded_by`,`assignment_id`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
             
-            conn.execute(query,info)
-            self.my_sql.connection.commit()
-            conn.close()
+            dot = upload_info[0].rfind(".")
+            file_name = upload_info[0][:dot]
+            file_extension = upload_info[0][dot+1:].lower()
+            info = (file_name,file_extension,date_now,upload_info[1],self.current_user.grade_number,
+                    self.current_user.class_number,self.current_user.user_name,upload_info[3])
+
+        conn.execute(query,info)
+        self.my_sql.connection.commit()
+        conn.close()
 
     def get_subject_info(self,subject,type_u,grade_n,class_n):
         conn = self.get_conn_cursor()
-        query = "SELECT * FROM teacheruploads WHERE grade_number = %s AND class_number = %s"
+        query = "SELECT * FROM teacher_uploads WHERE grade_number = %s AND class_number = %s"
         conn.execute(query,(grade_n,class_n))
 
         results = conn.fetchall()
@@ -175,15 +184,16 @@ class SQL_Connector:
 
         for res in results:
             if res[6] == subject and res[9] == type_u:
-                temp = [res[1],res[2],res[3],res[4]]
+                temp = [res[1],res[2],res[3],res[4],res[0]]
                 out.append(temp)
 
         conn.close()
         return out
     
-    def delete_material(self,m_name,m_type):
+    def delete_material(self,mat_id):
         conn = self.get_conn_cursor()
-        query = "DELETE FROM teacheruploads WHERE input_name = %s AND type_of_upload = %s"
-        conn.execute(query,(m_name,m_type))
-        self.my_sql.connection.commit()
+        if self.current_user.user_type == "Teacher" or self.current_user.user_type == "Admin":
+            query = "DELETE FROM teacher_uploads WHERE id = %s"
+            conn.execute(query,mat_id)
+            self.my_sql.connection.commit()
         conn.close()

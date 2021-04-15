@@ -10,7 +10,7 @@
     <div class="main_div">
         <h1 class="center_text">Anchovy Primary School Learning Environment</h1>
         <h2 class="center_text">{{subject}}</h2>
-        {% if user_type == "Teacher" %}
+        {% if user.user_type == "Teacher" or user.user_type == "Admin" %}
             <div>
                 <p>Enter details below to add new materials to the subject.</p>
                 <form method="POST" enctype="multipart/form-data">
@@ -27,23 +27,9 @@
                     <input type="hidden" name="form_type" value="upload">
                 </form>
             </div>
-            <div style="display: flex;">
-                <form method="POST">
-                    <p>Enter the name of the material you want to remove, select the type of material and click delete.</p>
-                    <div>
-                        <label for="name">Name of material: </label>
-                        <input required type="text" name="name"><br>
-                        <h4>User Type</h4>
-                        <label for="type">Assignment</label>
-                        <input required type="radio" name="type" value="assignment"><br>
-                        <label for="type">Lecture Notes</label>
-                        <input required type="radio" name="type" value="lecture_notes"><br>
-                    </div>
-                    <div><button type="submit">DELETE</button></div>
-                    <input type="hidden" name="form_type" value="delete">
-                </form>
-            </div>
+            
         {% endif %}
+        
             <div>
                 <div>
                     <h3>Lecture Notes:</h3>
@@ -52,7 +38,15 @@
                             <h4>Name: {{notes[i][2]}}</h4>
                             <h4>Description:</h4>
                             <p>{{notes[i][3]}}</p>
-                            <p>{{notes[i][0]}}.{{notes[i][1]}}</p>
+                            <a href="/uploads/teacher_uploads/{{notes[i][0]}}.{{notes[i][1]}}">{{notes[i][0]}}.{{notes[i][1]}}</a>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% if user.user_type == "Teacher" or user.user_type == "Admin" %}
+                                    <button type="submit">DELETE</button>
+                                    <input type="hidden" name="form_type" value="delete">
+                                    <input type="hidden" name="mat_type" value="notes">
+                                    <input type="hidden" name="notes_id" value="{{notes[i][4]}}">
+                                {% endif %}
+                            </form>
                         {% endfor %}
                     {% endif %}
                 </div><br>
@@ -63,7 +57,24 @@
                             <h4>Name: {{assignments[i][2]}}</h4>
                             <h4>Description:</h4>
                             <p>{{assignments[i][3]}}</p>
-                            <p>{{assignments[i][0]}}.{{assignments[i][1]}}</p>
+                            <a href="/uploads/teacher_uploads/{{assignments[i][0]}}.{{assignments[i][1]}}">
+                                {{assignments[i][0]}}.{{assignments[i][1]}}
+                            </a><br>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% if user.user_type == "Teacher" or user.user_type == "Admin" %}
+                                    <button type="submit">DELETE</button>
+                                    <input type="hidden" name="form_type" value="delete">
+                                    <input type="hidden" name="mat_type" value="assignments">
+                                    <input type="hidden" name="assignment_id" value="{{assignments[i][4]}}">
+                                {% endif %}
+                                {% if user.user_type == "Student" %}
+                                    <label for="file">Submission</label>
+                                    <input required type="file" name="file"><br>
+                                    <button type="submit">SUBMIT</button>
+                                    <input type="hidden" name="form_type" value="submissions">
+                                    <input type="hidden" name="assignment_id" value="{{assignments[i][4]}}">
+                                {% endif %}
+                            </form>
                         {% endfor %}
                     {% endif %}
                 </div>

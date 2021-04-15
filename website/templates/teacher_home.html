@@ -11,16 +11,17 @@
 	<div class="main_div">
         <div>
             <h2 class="center_text">Teacher Home</h2>
-            <p class="center_text">Welcome {{current_user.user_name}} to the Teacher Home page where you may perform all of the actions stated below:</p><br>
+            <p class="center_text">Welcome {{current_user.user_name}} to the Teacher Home page where you may perform all of the actions stated below:</p>
+            <h2>Grade {{current_user.grade_number}}   Class {{current_user.class_number}}</h2>
             <button><a href="/manage_tests">MANAGE TESTS</a></button>
         </div>
         <div>
             <p>To manage course material, click the subject you wish to manage.</p>
-            <button><a href="/maths">MATHEMATICS</a></button>
-            <button><a href="/english">ENGLISH</a></button>
-            <button><a href="/science">SCIENCE</a></button>
+            <a href="/maths"><button>MATHEMATICS</button></a>
+            <a href="/english"><button>ENGLISH</button></a>
+            <a href="/science"><button>SCIENCE</button></a>
         </div>
-        <button><a href="/login">Logout</a></button>
+        <a href="/login"><button>Logout</button></a>
     </div>
 </body>
 </html>
