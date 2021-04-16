@@ -2,14 +2,15 @@ from flask import Blueprint, render_template, redirect, url_for, request
 
 
 class Admin_Blueprint(Blueprint):
-    def __init__(self,name,kind,my_sql):
+    def __init__(self,name,kind,c_checker,u_manager):
         Blueprint.__init__(self,name,kind)
         self.current_user = None
-        self.mysql = my_sql
+        self.cred_check = c_checker
+        self.user_manager = u_manager
 
         @self.route("/admin_home", methods=['GET','POST'])
         def admin_home():
-            self.current_user = self.mysql.current_user
+            self.current_user = self.cred_check.current_user
             if request.method == 'POST':
                 if request.form["form_type"] == "manage_users":
                     return redirect(url_for("admin.manage_users"))
@@ -20,7 +21,7 @@ class Admin_Blueprint(Blueprint):
         @self.route("/manage_users",methods=['GET','POST'])
         def manage_users():
             del_msg,add_msg,edit_msg = "","",""
-            all_users = self.mysql.get_all_users()
+            all_users = self.user_manager.get_all_users()
 
             if request.method == 'POST':
                 if request.form["form_type"] == "add_users":
@@ -42,7 +43,7 @@ class Admin_Blueprint(Blueprint):
                     gender = request.form["gender"]
 
                     new_user_info = [first_name,last_name,pass_word,user_type,str(grade_number),str(class_number),gender]
-                    self.mysql.add_user(new_user_info)
+                    self.user_manager.add_user(new_user_info)
                     add_msg = "User \'"+first_name.lower()+last_name.lower()+"\' has been added successfully"
                 elif request.form["form_type"] == "edit_users":
                     user_info = [request.form.get("user_name"),request.form.get("user_type")]
@@ -52,7 +53,7 @@ class Admin_Blueprint(Blueprint):
                         edit_msg = "Please ensure both password and confirm password are identical."
                         return render_template("manage_users.html",len=len(all_users),all_users=all_users,delete_message=del_msg,add_message=add_msg,edit_message=edit_msg)
                     
-                    edit = self.mysql.update_user(user_info,new_info)
+                    edit = self.user_manager.update_user(user_info,new_info)
 
                     if edit == 0:
                         edit_msg = "Update has failed, "+user_info[0]+" was not updated."
@@ -61,10 +62,10 @@ class Admin_Blueprint(Blueprint):
                 elif request.form["form_type"] == "delete_users":
                     user_name = request.form.get("user_name")
                     user_type = request.form.get("user_type")
-                    self.mysql.delete_user(user_name,user_type)
+                    self.user_manager.delete_user(user_name,user_type)
                     del_msg = "User "+user_name+" was deleted successfully"
                 
-            all_users = self.mysql.get_all_users()
+            all_users = self.user_manager.get_all_users()
             return render_template("manage_users.html",len=len(all_users),all_users=all_users,delete_message=del_msg,add_message=add_msg,edit_message=edit_msg)
             
         @self.route("/manage_classrooms", methods=['GET','POST'])
